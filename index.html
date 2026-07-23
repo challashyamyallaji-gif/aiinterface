@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S. | Advanced AI OS Terminal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Startup / Boot Diagnostics Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="hud-container">
+            <div class="arc-reactor">
+                <div class="core"></div>
+                <div class="ring-1"></div>
+                <div class="ring-2"></div>
+                <div class="ring-3"></div>
+            </div>
+            <h1 class="glitch-title" data-text="J.A.R.V.I.S. OS v5.0">J.A.R.V.I.S. OS v5.0</h1>
+            <p class="boot-subtitle">MARK V DIRECTIVE PROTOCOL • STANDALONE CORE</p>
+            <div class="loading-track">
+                <div class="loading-fill"></div>
+            </div>
+            <span class="boot-log" id="boot-log">INITIALIZING SYSTEM ARCHITECTURE...</span>
+        </div>
+    </div>
+
+    <!-- Interactive Background Particles Canvas -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Main Application Container -->
+    <div class="app-container hidden" id="app">
+        
+        <!-- Top Navigation Bar -->
+        <header class="navbar glass-panel">
+            <div class="nav-brand">
+                <div class="brand-badge">
+                    <i class="fa-solid fa-atom glow-icon"></i>
+                </div>
+                <div class="brand-meta">
+                    <span class="brand-title">J.A.R.V.I.S.</span>
+                    <span class="brand-sub">MARK V PRO</span>
+                </div>
+                <div class="status-badge" id="ai-status-badge">
+                    <span class="pulse-dot"></span>
+                    <span id="ai-status-text">ONLINE</span>
+                </div>
+            </div>
+
+            <div class="nav-metrics">
+                <div class="metric-card">
+                    <i class="fa-solid fa-microchip"></i>
+                    <div class="metric-info">
+                        <span class="metric-label">CPU USAGE</span>
+                        <span class="metric-value" id="cpu-val">08%</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <i class="fa-solid fa-memory"></i>
+                    <div class="metric-info">
+                        <span class="metric-label">RAM ALLOCATED</span>
+                        <span class="metric-value" id="ram-val">3.2 / 16 GB</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <i class="fa-solid fa-server"></i>
+                    <div class="metric-info">
+                        <span class="metric-label">CTX MEMORY</span>
+                        <span class="metric-value" id="ctx-val">3 TOPICS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-controls">
+                <div class="time-widget">
+                    <span id="clock" class="digital-clock">00:00:00 AM</span>
+                    <span id="date" class="digital-date">JAN 01, 2026</span>
+                </div>
+                <button id="audio-toggle" class="icon-btn active" title="Toggle Sound FX"><i class="fa-solid fa-volume-high"></i></button>
+                <button id="theme-toggle" class="icon-btn" title="Toggle Visual Mode"><i class="fa-solid fa-sun"></i></button>
+                <button id="settings-btn" class="icon-btn" title="System Settings"><i class="fa-solid fa-sliders"></i></button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <div class="main-body">
+            
+            <!-- Left Navigation Sidebar -->
+            <aside class="sidebar glass-panel" id="sidebar">
+                <button id="btn-new-chat" class="btn-glow-primary">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span>New Session</span>
+                </button>
+                
+                <div class="sidebar-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="chat-search" placeholder="Search knowledge or logs...">
+                </div>
+
+                <nav class="sidebar-nav">
+                    <div class="nav-section-title">SYSTEM DASHBOARD</div>
+                    <ul class="nav-menu">
+                        <li class="active" data-view="chat"><i class="fa-solid fa-terminal"></i> <span>Active Console</span></li>
+                        <li data-view="commands"><i class="fa-solid fa-code"></i> <span>Command Directory</span></li>
+                        <li data-view="analytics"><i class="fa-solid fa-chart-line"></i> <span>Telemetry Dashboard</span></li>
+                        <li data-view="about"><i class="fa-solid fa-shield-halved"></i> <span>System Diagnostics</span></li>
+                    </ul>
+
+                    <div class="nav-section-title">SESSION LOGS</div>
+                    <ul id="history-list" class="history-list">
+                        <!-- History injected via JavaScript -->
+                    </ul>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <button id="btn-export" class="btn-utility" title="Export Chat Log (.TXT)"><i class="fa-solid fa-file-export"></i></button>
+                    <button id="btn-import-trigger" class="btn-utility" title="Import Session File"><i class="fa-solid fa-file-import"></i></button>
+                    <input type="file" id="file-import" accept=".json,.txt" style="display:none;">
+                    <button id="btn-clear-history" class="btn-utility danger" title="Purge System Logs"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </aside>
+
+            <!-- Dynamic View Area -->
+            <main class="viewport glass-panel">
+                
+                <!-- 1. CHAT CONSOLE VIEW -->
+                <div id="view-chat" class="view-panel active">
+                    <div id="chat-messages" class="chat-messages">
+                        <!-- Dynamic Messages Output Here -->
+                    </div>
+
+                    <!-- Voice Visualizer Anim (Simulated Speech Input) -->
+                    <div class="voice-visualizer hidden" id="voice-vis">
+                        <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                        <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                    </div>
+
+                    <!-- Floating Interactive Input Bar -->
+                    <div class="input-panel">
+                        <div class="input-wrapper glass-panel">
+                            <button class="input-tool-btn" id="btn-attach" title="Attach Code/File Payload"><i class="fa-solid fa-paperclip"></i></button>
+                            <textarea id="chat-input" placeholder="Initiate request or system directive (e.g., /help, /time)..." rows="1"></textarea>
+                            <button class="input-tool-btn" id="btn-voice" title="Voice Module Input"><i class="fa-solid fa-microphone"></i></button>
+                            <button class="send-btn" id="btn-send" title="Dispatch Directive"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. COMMAND DIRECTORY VIEW -->
+                <div id="view-commands" class="view-panel hidden">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-terminal"></i> Command Directory & Directives</h2>
+                        <p>Offline system directives built into JARVIS core architecture.</p>
+                    </div>
+                    <div class="command-grid" id="command-grid">
+                        <!-- Injected via UI JS -->
+                    </div>
+                </div>
+
+                <!-- 3. TELEMETRY & ANALYTICS VIEW -->
+                <div id="view-analytics" class="view-panel hidden">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-chart-line"></i> Real-time Telemetry Analytics</h2>
+                        <p>Interactive diagnostics of memory runtime, query patterns, and execution load.</p>
+                    </div>
+                    <div class="analytics-grid">
+                        <div class="analytics-card glass-panel">
+                            <h3>Query Execution Distribution</h3>
+                            <div class="chart-container">
+                                <svg viewBox="0 0 200 200" class="pie-chart">
+                                    <circle cx="100" cy="100" r="80" stroke="rgba(255,255,255,0.05)" stroke-width="20" fill="none"/>
+                                    <circle cx="100" cy="100" r="80" stroke="var(--accent)" stroke-width="20" stroke-dasharray="350 502" fill="none" class="chart-segment"/>
+                                    <circle cx="100" cy="100" r="80" stroke="#3b82f6" stroke-width="20" stroke-dasharray="100 502" stroke-dashoffset="-350" fill="none" class="chart-segment"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="analytics-card glass-panel">
+                            <h3>Active System Context Engine</h3>
+                            <div id="context-inspector" class="context-inspector">
+                                <!-- Dynamic Context Variables -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. ABOUT SYSTEM DIAGNOSTICS VIEW -->
+                <div id="view-about" class="view-panel hidden">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-shield-halved"></i> JARVIS OS Architecture</h2>
+                        <p>Full standalone client specification parameters.</p>
+                    </div>
+                    <div class="about-card glass-panel">
+                        <div class="about-row"><span>SYSTEM MODEL:</span><strong>J.A.R.V.I.S. Standalone Terminal v5.0</strong></div>
+                        <div class="about-row"><span>FRONTEND FRAMEWORK:</span><strong>Pure ES6+, CSS3 Vanilla Glassmorphism</strong></div>
+                        <div class="about-row"><span>NLP PARSER ENGINE:</span><strong>Levenshtein & Keyword Keyword Scanners</strong></div>
+                        <div class="about-row"><span>DATA PERSISTENCE:</span><strong>HTML5 LocalStorage Engine</strong></div>
+                        <div class="about-row"><span>AUDIO SYNTHESIZER:</span><strong>Web Audio API Oscillator Node Core</strong></div>
+                        <div class="about-row"><span>EXTERNAL APIS DEPENDENCY:</span><strong>0% (100% Offline Capability)</strong></div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Settings Modal Dialog -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-sliders"></i> System Preferences</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label>Primary Accent Glow</label>
+                    <input type="color" id="accent-color-picker" value="#00f3ff">
+                </div>
+                <div class="setting-item">
+                    <label>Simulated Type Speed (ms)</label>
+                    <input type="range" id="typing-speed" min="5" max="80" value="20">
+                </div>
+                <div class="setting-item">
+                    <label>Sound Effects Audio Engine</label>
+                    <input type="checkbox" id="setting-sound-toggle" checked>
+                </div>
+                <div class="setting-item danger-zone">
+                    <label>Purge System Local Memory</label>
+                    <button id="btn-reset-memory" class="btn-danger"><i class="fa-solid fa-radiation"></i> Wipe Storage</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- ES6 Modular Engine Imports -->
+    <script src="knowledge.js"></script>
+    <script src="memory.js"></script>
+    <script src="commands.js"></script>
+    <script src="animations.js"></script>
+    <script src="ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
